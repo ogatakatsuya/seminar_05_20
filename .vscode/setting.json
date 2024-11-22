@@ -1,0 +1,127 @@
+{
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "platex",
+            "tools": [
+                "platex",
+                "pbibtex",
+                "platex",
+                "mendex",
+                "platex",
+                "dvipdfmx",
+                "move",
+                "delete"
+            ]
+        },
+        {
+          "name": "preliminary",
+          "tools": [
+              "platex",
+              "platex",
+              "platex",
+              "dvipdfmx",
+              "move",
+              "delete"
+          ]
+      }
+    ],
+    "latex-workshop.latex.tools": [
+        {
+            "name": "platex",
+            "command": "platex",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-kanji=utf8",
+                "-shell-escape",
+                "%DOCFILE%.tex"
+            ]
+        },
+        {
+            "name": "dvipdfmx",
+            "command": "dvipdfmx",
+            "args": [
+                "%DOCFILE%.dvi"
+            ]
+        },
+        {
+            "name": "pbibtex",
+            "command": "pbibtex",
+            "args": [
+                "-kanji=utf8",
+                "%DOCFILE%"
+            ]
+        },
+        {
+            "name":"move",
+            "command":"cp",
+            "args":[
+              "%DOCFILE%.pdf",
+              "out"
+            ]
+        },
+        {
+            "name":"mendex",
+            "command":"mendex",
+            "args":[
+              "-r",
+              "-c",
+              "-g",
+              "-s",
+              "dot.ist",
+              "-p",
+              "any",
+              "%DOCFILE%.idx"
+            ]
+        },
+        {
+          "name":"delete",
+          "command":"rm",
+          "args":[
+            "-f",
+            "%DOCFILE%.aux",
+            "%DOCFILE%.bbl",
+            "%DOCFILE%.blg",
+            "%DOCFILE%.dvi",
+            "%DOCFILE%.idx",
+            "%DOCFILE%.ilg",
+            "%DOCFILE%.ind",
+            "%DOCFILE%.lof",
+            "%DOCFILE%.log",
+            "%DOCFILE%.lot",
+            "%DOCFILE%.toc",
+            "%DOCFILE%.synctex.gz"
+          ]
+      }
+    ],
+    "latex-workshop.latex.magic.args": [
+    "-f", "-gg", "-pv", "-synctex=1", "-interaction=nonstopmode", "-file-line-error", "%DOC%"
+    ],
+    "latex-workshop.latex.clean.fileTypes": [
+      "*.aux", "*.bbl", "*.blg", "*.idx", "*.ind", "*.lof", "*.lot", "*.out", "*.toc", "*.acn", "*.acr", "*.alg", "*.glg", "*.glo", "*.gls", "*.ist", "*.fls", "*.log", "*.fdb_latexmk", "*.synctex.gz",
+      "_minted*", "*.nav", "*.snm", "*.vrb"
+    ],
+    "latex-workshop.latex.autoClean.run": "onBuilt",
+    "latex-workshop.view.pdf.viewer": "tab",
+    "latex-workshop.latex.autoBuild.run": "never",
+    "[tex]": {
+      "editor.suggest.snippetsPreventQuickSuggestions": false,
+      "editor.tabSize": 2
+    },
+    "[latex]": {
+      "editor.suggest.snippetsPreventQuickSuggestions": false,
+      "editor.tabSize": 2
+    },
+    "[bibtex]": {
+      "editor.tabSize": 2
+    },
+    "latex-workshop.intellisense.package.enabled": true,
+    "latex-workshop.latex.outDir": "out",
+    "editor.unicodeHighlight.allowedCharacters": {
+      "，": true,
+      "．": true
+    },
+    "latex-workshop.latex.recipe.default":"lastUsed"
+}
+    
