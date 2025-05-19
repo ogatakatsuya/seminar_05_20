@@ -7,3 +7,7 @@ template.synctex.gz
 template.toc
 template.nav
 template.snm
+
+.venv
+data
+__pycache__
