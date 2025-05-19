@@ -142,7 +142,7 @@
 %	PRESENTATION INFORMATION
 %----------------------------------------------------------------------------------------
 
-\title[Equivariant Graph Neural Networks]{E(n) Equivariant Graph Neural Networks} % The short title in the optional parameter appears at the bottom of every slide, the full title in the main parameter is only on the title page
+\title[ResNet]{Deep Residual Learning for Image Recognition} % The short title in the optional parameter appears at the bottom of every slide, the full title in the main parameter is only on the title page
 
 % \subtitle{Optional Subtitle} % Presentation subtitle, remove this command if a subtitle isn't required
 
@@ -179,42 +179,266 @@
 
 \section{Introduction}
 
-\section{Background}
-
-\section{Equivariant Graph Neural Networks}
-
 \section{Related Work}
+
+\section{Deep Residual Learning}
 
 \section{Experiments}
 
 \section{Conclusion}
 
 \begin{frame}
-	\frametitle{Blocks of Highlighted Text}
+	\frametitle{Introduction}
+
+	\textbf{Very deep networks has made a significant impact on image classification.}
 	
-	\begin{block}{Block Title}
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue.
-	\end{block}
-	
-	\begin{exampleblock}{Example Block Title}
-		Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan.
-	\end{exampleblock}
-	
-	\begin{alertblock}{Alert Block Title}
-		Pellentesque sed tellus purus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
-	\end{alertblock}
-	
-	\begin{block}{} % Block without title
-		Suspendisse tincidunt sagittis gravida. Curabitur condimentum, enim sed venenatis rutrum, ipsum neque consectetur orci.
-	\end{block}
+	\begin{itemize}
+		\item Deep convolutional neural networks have led to a series of breakthroughs for image classification.
+		\item \textit{Is learning better networks as easy as stacking more layers?}
+		\item When deeper networks are able to start converging, a degradation problem has been exposed: with the network depth increasing, accuracy gets saturated.
+	\end{itemize}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{./images/Screenshot 2025-05-20 at 0.22.01.png}
+	\end{figure}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Equation}
+	\frametitle{Introduction}
 
-	\begin{equation}
-		\cos^3 \theta =\frac{1}{4}\cos\theta+\frac{3}{4}\cos 3\theta
-	\end{equation}
+	\textbf{It should be possible for deeper networks to perform at least as well as their shallower counterparts.}
+	
+	\begin{itemize}
+		\item The degradation (of training accuracy) indicates that not all systems are similarly easy to optimize.
+		\item There exists a solution by construction to the deeper model.
+		\item The existence of this constructed solution indicates that a deeper model should produce no higher training error than its shallower counterpart.
+		\item This paper describes how residual learning and shortcut connections work together to solve the degradation problem.
+	\end{itemize}
 \end{frame}
 
+\begin{frame}
+	\frametitle{Related Work}
+
+	\textbf{These two ideas (residual representations, shortcut connections) already used in the other works}
+	\begin{itemize}
+		\item Residual Representations.
+		\begin{itemize}
+			\item Classic computer vision techniques, such as VLAD and Fisher Vectors, encode “residuals” (i.e., differences from some representative value or dictionary entry) rather than raw features.
+		\end{itemize}
+		\item Shortcut Connections.
+		\begin{itemize}
+			\item Early MLP variants that included linear connections from input to output use the same idea.
+			\item The novelty of ResNet lies in using only parameter-free shortcuts (pure identity mapping) and always learning residual functions.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Related Work}
+
+	\textbf{The novelty of ResNet lies in using these method in deep networks to optimize training.}
+	\begin{itemize}
+		\item Previous methods have not demonstrated successful training of very deep networks (100+ layers) without optimization issues, especially using only identity shortcuts and residual mappings.
+		\item The authors assert their simple, general approach—stacking residual blocks with identity shortcuts—addresses optimization challenges for deep models and outperforms prior strategies.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Deep Residual Learning}
+
+	\textbf{3.1. Residual Learning}
+
+	\begin{itemize}
+		\item We address the degradation problem by introducing a Deep residual learning framework.
+		\item Instead of making layers directly fit a desired mapping \( H(x) \), we let them fit a residual mapping:
+	\end{itemize}
+
+	\begin{exampleblock}{Residual Mapping}
+		Given \( H(x) \), let  
+		\[
+		F(x) := H(x) - x \quad \Rightarrow \quad H(x) = F(x) + x
+		\]
+	\end{exampleblock}
+
+	\begin{itemize}
+		\item We hypothesize it's easier to optimize \( F(x) \) than \( H(x) \) directly.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Deep Residual Learning}
+
+	\textbf{3.1. Residual Learning}
+
+	\begin{block}{Identity Mapping Case}
+		If the identity mapping is optimal, pushing \( F(x) \rightarrow 0 \) is easier than approximating \( H(x) = x \) via nonlinear layers.
+	\end{block}
+
+	\begin{itemize}
+		\item This is implemented with shortcut connections, which skip one or more layers and perform identity mapping.
+	\end{itemize}
+
+	\begin{alertblock}{No Overhead, Easy Integration}
+		Shortcut connections add no extra parameters or computation.  
+		Training can proceed end-to-end using SGD and backpropagation.  
+		Easily implementable with standard libraries (e.g., Caffe).
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Deep Residual Learning}
+
+    \textbf{3.2. Identity Mapping by Shortcuts}
+    \begin{equation}
+        y = F(x, \{W_i\}) + x
+    \end{equation}
+    \vspace{-2mm}
+    \begin{itemize}
+        \item $x$: Input vector
+        \item $y$: Output vector
+        \item $F(x, \{W_i\})$: Residual function (e.g., two-layer MLP or CNN)
+    \end{itemize}
+    \vspace{2mm}
+    \textbf{Example:}
+    \[
+        F = W_2 \sigma(W_1 x)
+    \]
+    where $\sigma$ is ReLU and biases are omitted.
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{./images/Screenshot 2025-05-20 at 0.19.36.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Deep Residual Learning}
+
+    \textbf{3.2. Identity Mapping by Shortcuts}
+
+    \textbf{When Dimensions Differ:}
+    \begin{equation}
+        y = F(x, \{W_i\}) + W_s x
+    \end{equation}
+
+    \begin{itemize}
+        \item $W_s$: Projection matrix (e.g., $1 \times 1$ convolution).
+        \item Used to match dimensions of $x$ and $F(x)$.
+    \end{itemize}
+
+    \textbf{Note:} Identity mapping ($W_s = I$) is sufficient in most cases.
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{./images/Screenshot 2025-05-20 at 0.19.36.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Network Architectures}
+	
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Based on the plain network, we insert shortcut connections which turn the network into its counterpart residual version.
+				\item When the dimensions increase: 
+				\\(A) The shortcut still performs identity mapping, with extra zero entries padded for increasing dimensions.
+				\\(B) The projection shortcut in Eqn.(2) is used to match dimensions (done by 1×1 convolutions).
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\centering
+			\includegraphics[width=0.5\linewidth]{./images/Screenshot 2025-05-20 at 0.25.50.png} % 画像ファイル名を指定（拡張子不要）
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Experiments}
+
+	\textbf{ResNet showed significant improvements even with deep network.}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\textwidth]{./images/Screenshot 2025-05-20 at 0.33.26.png}
+	\end{figure}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\textwidth]{./images/Screenshot 2025-05-20 at 0.33.49.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Experiments}
+
+	\textbf{ResNet showed significant improvements even with deep network.}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\textwidth]{./images/Screenshot 2025-05-20 at 0.34.01.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Experiments}
+
+	\textbf{ResNet showed significant improvements even with deep network.}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\textwidth]{./images/Screenshot 2025-05-20 at 0.34.11.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Experiments}
+
+	\textbf{ResNet showed significant improvements even with deep network.}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\textwidth]{./images/Screenshot 2025-05-20 at 0.34.30.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Experiments}
+
+	\textbf{ResNet showed significant improvements even with deep network.}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.65\textwidth]{./images/Screenshot 2025-05-20 at 0.40.29.png}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Experiments}
+
+	\textbf{ResNet showed significant improvements even with deep network.}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{./images/Screenshot 2025-05-20 at 0.41.53.png}
+	\end{figure}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.40\textwidth]{./images/Screenshot 2025-05-20 at 0.42.53.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Experiments}
+
+	\textbf{ResNet showed significant improvements even with deep network.}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\textwidth]{./images/Screenshot 2025-05-20 at 0.44.13.png}
+	\end{figure}
+\end{frame}
 \end{document} 
